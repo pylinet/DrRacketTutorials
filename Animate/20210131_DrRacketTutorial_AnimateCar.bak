@@ -1,0 +1,62 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-beginner-reader.ss" "lang")((modname 20210131_DrRacketTutorial_AnimateCar) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
+(require 2htdp/universe)
+(require 2htdp/image)
+
+(define WIDTH-OF-WORLD 200)
+
+
+(define WHEEL-RADIUS 5)
+(define WHEEL-DISTANCE (* WHEEL-RADIUS 5))
+
+(define WHEEL
+  (circle WHEEL-RADIUS "solid" "black"))
+
+(define SPACE
+  (rectangle WHEEL-RADIUS 0 "solid" "white"))
+
+(define BOTH-WHEELS
+  (beside WHEEL SPACE WHEEL))
+
+
+(define CAR-BODY
+  (rectangle (* 4 WHEEL-RADIUS)(* 4 WHEEL-RADIUS) "solid" "red"))
+
+(define CAR-BODY-SIDE
+  (rectangle (* 2 WHEEL-RADIUS)(* 2 WHEEL-RADIUS) "solid" "red"))
+   
+(define TOTAL-CAR
+  (beside/align "bottom" CAR-BODY-SIDE CAR-BODY CAR-BODY-SIDE))
+
+
+(define COMPLETE-CAR
+  (underlay/align/offset "center" "bottom" TOTAL-CAR 0 WHEEL-RADIUS BOTH-WHEELS))
+  
+; WorldState -> WorldState
+; moves the car by 3 pixels for every clock tick
+(define (tock cw) (+ cw 3))
+
+(check-expect (tock 20) 23)
+(check-expect (tock 78) 81)
+
+(define Y-CAR 50)
+
+(define tree
+  (underlay/xy (circle 10 "solid" "green")
+               9 15
+               (rectangle 2 20 "solid" "brown")))
+
+(define BACKGROUND
+  (overlay/align "center" "bottom" tree (rectangle WIDTH-OF-WORLD WIDTH-OF-WORLD "solid" "white")))
+
+
+
+;WorldState -> Image
+; places the car into the BACKGROUND scene,
+; according to the given world state
+(define (render cw) (place-image COMPLETE-CAR cw Y-CAR BACKGROUND))
+
+
+
+
